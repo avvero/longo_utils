@@ -1,0 +1,27 @@
+sourceCompatibility = 1.7
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // The production code uses the SLF4J logging API at compile time
+    compile 'org.mongodb:mongo-java-driver:2.11.3'
+    compile 'org.slf4j:slf4j-api:1.7.5'
+
+    testCompile "junit:junit:4.11"
+}
+
+task copyToLib(type: Sync) {
+    from configurations.runtime
+    into "/libs"
+}
+
+version = '0.0.1'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Longo utils', 'Implementation-Version': version
+    }
+}
+
