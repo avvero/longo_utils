@@ -10,13 +10,12 @@ import java.net.UnknownHostException;
  */
 public class MongoUtils {
 
-    private static final String MONGODB_URI_PATTERN = "mongodb://%s:%s";
-    private  static final String NATURAL_ORDER = "$natural";
+    private static final String NATURAL_ORDER = "$natural";
 
     public static DB getDB(String host, int port, String databaseName) throws UnknownHostException {
-        String uri = String.format(MONGODB_URI_PATTERN, host, port);
-        Mongo mongo = new Mongo(new MongoURI(uri));
-        return mongo.getDB(databaseName);
+        MongoClient mongoClient = new MongoClient(host, port);
+        DB db = mongoClient.getDB(databaseName);
+        return db;
     }
 
     public static DBCursor getTailableCursor(DB db, String collectionName) throws UnknownHostException {
@@ -26,11 +25,18 @@ public class MongoUtils {
         return cur;
     }
 
-    public static void tail(DB db, DBCursor cur, TailableCursorHandler handler) {
+    public static DBCursor getTailableCursor(DB db, String collectionName, BasicDBObject query) throws UnknownHostException {
+        db.requestStart();
+        DBCollection collection = db.getCollection(collectionName);
+        DBCursor cur = collection.find(query).sort(new BasicDBObject(NATURAL_ORDER, 1)).addOption(Bytes.QUERYOPTION_TAILABLE).addOption(Bytes.QUERYOPTION_AWAITDATA);
+        return cur;
+    }
+
+    public static void tail(DB db, DBCursor cur, CursorListener listener) {
         try {
             while (cur.hasNext()) {
                 BasicDBObject doc = (BasicDBObject)cur.next();
-                handler.handle(doc);
+                listener.afterInsert(doc);
             }
         } finally {
             try {
