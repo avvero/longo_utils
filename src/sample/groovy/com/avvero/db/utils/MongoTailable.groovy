@@ -4,11 +4,11 @@ import com.mongodb.BasicDBObject
 import com.mongodb.DB
 import com.mongodb.DBCursor
 
-DB db = MongoUtils.getDB("127.0.0.1", 27017, "physicians")
+DB db = MongoUtils.getDB("127.0.0.1", 27017, "longo")
 
 BasicDBObject query = new BasicDBObject("first", "Sem");
 
-DBCursor cursor = MongoUtils.getTailableCursor(db, "doctor", query);
+DBCursor cursor = MongoUtils.getTailableCursor(db, "test", query);
 MongoUtils.tail(db, cursor, new CursorListener() {
     @Override
     public void afterInsert(Object o) {

@@ -18,10 +18,10 @@ task copyToLib(type: Sync) {
     into "/libs"
 }
 
-version = '0.0.1'
+version = '0.0.3'
+
 jar {
     manifest {
-        attributes 'Implementation-Title': 'Longo utils', 'Implementation-Version': version
+        attributes 'Implementation-Title': 'longo_utils', 'Implementation-Version': version
     }
 }
-
